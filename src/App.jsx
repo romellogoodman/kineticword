@@ -25,6 +25,10 @@ function Controls({
   setIsPlaying,
   duration,
   setDuration,
+  primaryColor,
+  setPrimaryColor,
+  secondaryColor,
+  setSecondaryColor,
   isExporting,
   onExport
 }) {
@@ -44,6 +48,14 @@ function Controls({
     // Set the new duration and reset progress
     setDuration(parseInt(e.target.value));
     setCurrentFrame(0); // Reset to beginning when duration changes
+  };
+  
+  const handlePrimaryColorChange = (e) => {
+    setPrimaryColor(e.target.value);
+  };
+  
+  const handleSecondaryColorChange = (e) => {
+    setSecondaryColor(e.target.value);
   };
 
   return (
@@ -100,6 +112,32 @@ function Controls({
       </div>
       
       <div className="control-group">
+        <label>Background Color:</label>
+        <div className="color-picker-container">
+          <input 
+            type="color" 
+            value={primaryColor} 
+            onChange={handlePrimaryColorChange}
+            className="color-picker"
+          />
+          <span className="color-value">{primaryColor}</span>
+        </div>
+      </div>
+      
+      <div className="control-group">
+        <label>Text Color:</label>
+        <div className="color-picker-container">
+          <input 
+            type="color" 
+            value={secondaryColor} 
+            onChange={handleSecondaryColorChange}
+            className="color-picker"
+          />
+          <span className="color-value">{secondaryColor}</span>
+        </div>
+      </div>
+
+      <div className="control-group">
         <ExportButton 
           duration={duration}
           isExporting={isExporting}
@@ -113,6 +151,8 @@ function Controls({
 function App() {
   const [text, setText] = useState("SLIDE");
   const [duration, setDuration] = useState(4); // Default 4 seconds
+  const [primaryColor, setPrimaryColor] = useState("#3a3042");
+  const [secondaryColor, setSecondaryColor] = useState("#d2bf55");
   // Calculate total frames based on 60fps
   const totalFrames = duration * 60;
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -245,7 +285,7 @@ function App() {
           yPosition = ((progress - 0.5) * 2) * 200;
         }
         
-        // Create JSX for Satori with square dimensions
+        // Create JSX for Satori with square dimensions and current colors
         const element = (
           <div
             style={{
@@ -255,7 +295,7 @@ function App() {
               justifyContent: 'center',
               width: size,
               height: size,
-              backgroundColor: '#3a3042',
+              backgroundColor: primaryColor,
             }}
           >
             <div
@@ -263,7 +303,7 @@ function App() {
                 fontFamily: 'Public Sans, Inter, sans-serif',
                 fontSize: Math.floor(size / 5) + 'px', // Dynamic font size based on container
                 fontWeight: 500,
-                color: '#d2bf55',
+                color: secondaryColor,
                 transform: `translateY(${yPosition * size / 500}px)`, // Scale yPosition to container size
                 textAlign: 'center',
               }}
@@ -295,8 +335,8 @@ function App() {
             canvas.height = size;
             const ctx = canvas.getContext('2d');
             
-            // Fill background
-            ctx.fillStyle = '#3a3042';
+            // Fill background with current primary color
+            ctx.fillStyle = primaryColor;
             ctx.fillRect(0, 0, size, size);
             
             // Draw the SVG image
@@ -368,11 +408,13 @@ function App() {
     }
   }, [currentFrame, duration, isPlaying, totalFrames]);
 
-  // Update CSS variables for animation
+  // Update CSS variables for animation and colors
   useEffect(() => {
     document.documentElement.style.setProperty('--total-frames', totalFrames);
     document.documentElement.style.setProperty('--animation-duration', `${duration}s`);
-  }, [duration, totalFrames]);
+    document.documentElement.style.setProperty('--color-primary', primaryColor);
+    document.documentElement.style.setProperty('--color-secondary', secondaryColor);
+  }, [duration, totalFrames, primaryColor, secondaryColor]);
 
   // Setup animation frame polling when playing
   useEffect(() => {
@@ -420,6 +462,10 @@ function App() {
           setIsPlaying={setIsPlaying}
           duration={duration}
           setDuration={setDuration}
+          primaryColor={primaryColor}
+          setPrimaryColor={setPrimaryColor}
+          secondaryColor={secondaryColor}
+          setSecondaryColor={setSecondaryColor}
           isExporting={isExporting}
           onExport={captureFrames}
         />
