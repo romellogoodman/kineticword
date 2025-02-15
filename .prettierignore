@@ -1,0 +1,10 @@
+# Ignore artifacts
+node_modules
+dist
+build
+
+# Ignore all HTML
+*.html
+
+# Ignore public folder
+public

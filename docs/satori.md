@@ -14,18 +14,18 @@ Satori supports the JSX syntax, which makes it very straightforward to use. Here
 
 ```jsx
 // api.jsx
-import satori from "satori";
+import satori from 'satori';
 
-const svg = await satori(<div style={{ color: "black" }}>hello, world</div>, {
+const svg = await satori(<div style={{ color: 'black' }}>hello, world</div>, {
   width: 600,
   height: 400,
   fonts: [
     {
-      name: "Roboto",
+      name: 'Roboto',
       // Use `fs` (Node.js only) or `fetch` to read the font as Buffer/ArrayBuffer and provide `data` here.
       data: robotoArrayBuffer,
       weight: 400,
-      style: "normal",
+      style: 'normal',
     },
   ],
 });
@@ -55,10 +55,10 @@ If you don't have JSX transpiler enabled, you can simply pass [React-elements-li
 ```js
 await satori(
   {
-    type: "div",
+    type: 'div',
     props: {
-      children: "hello, world",
-      style: { color: "black" },
+      children: 'hello, world',
+      style: { color: 'black' },
     },
   },
   options
@@ -80,10 +80,7 @@ You can find the list of supported HTML elements and their preset styles [here](
 You can use `<img>` to embed images. However, `width`, and `height` attributes are recommended to set:
 
 ```jsx
-await satori(
-  <img src="https://picsum.photos/200/300" width={200} height={300} />,
-  options
-);
+await satori(<img src="https://picsum.photos/200/300" width={200} height={300} />, options);
 ```
 
 When using `background-image`, the image will be stretched to fit the element by default if you don't specify the size.
@@ -301,21 +298,21 @@ RTL languages are not supported either.
 Satori currently supports three font formats: TTF, OTF and WOFF. Note that WOFF2 is not supported at the moment. You must specify the font if any text is rendered with Satori, and pass the font data as ArrayBuffer (web) or Buffer (Node.js):
 
 ```js
-await satori(<div style={{ fontFamily: "Inter" }}>Hello</div>, {
+await satori(<div style={{ fontFamily: 'Inter' }}>Hello</div>, {
   width: 600,
   height: 400,
   fonts: [
     {
-      name: "Inter",
+      name: 'Inter',
       data: inter,
       weight: 400,
-      style: "normal",
+      style: 'normal',
     },
     {
-      name: "Inter",
+      name: 'Inter',
       data: interBold,
       weight: 700,
-      style: "normal",
+      style: 'normal',
     },
   ],
 });

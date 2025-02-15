@@ -101,6 +101,7 @@ This starts the animation when a checkbox is checked.
 ## When to Use This Technique
 
 Use CSS sprite sheet animations when you need:
+
 - Small, discrete animated elements
 - Interactive animations triggered by user events
 - Frame-by-frame control over the animation
