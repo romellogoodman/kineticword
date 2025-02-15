@@ -51,20 +51,63 @@ body {
   padding: 0;
 }
 
-.controls {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  background: rgba(42, 32, 50, 0.8);
-  padding: 15px;
-  border-radius: 8px;
+/* Layout for sidebar and main content */
+.app-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: #2a2032;
+  border-right: 1px solid #d2bf55;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.animation-container {
+  width: min(80vw, 500px);
+  height: min(80vw, 500px);
+  aspect-ratio: 1 / 1;
+  background: #3a3042;
   border: 1px solid #d2bf55;
-  width: 200px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Controls styling */
+.controls {
+  width: 100%;
+}
+
+.app-title {
+  color: #d2bf55;
+  font-family: "Public Sans", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .control-group {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .control-group:last-child {
@@ -73,14 +116,15 @@ body {
 
 .control-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-family: "Public Sans", sans-serif;
   font-size: 14px;
   font-weight: 500;
+  color: #d2bf55;
 }
 
 .controls input[type="text"] {
-  background: #2a2032;
+  background: #3a3042;
   color: #d2bf55;
   border: 1px solid #d2bf55;
   padding: 8px 12px;
@@ -101,7 +145,7 @@ body {
   -webkit-appearance: none;
   height: 6px;
   border-radius: 3px;
-  background: #2a2032;
+  background: #3a3042;
   outline: none;
 }
 
@@ -127,11 +171,12 @@ body {
 .buttons {
   display: flex;
   gap: 10px;
+  margin-top: 20px;
 }
 
 .buttons button {
   flex: 1;
-  background: #2a2032;
+  background: #3a3042;
   color: #d2bf55;
   border: 1px solid #d2bf55;
   padding: 8px 12px;
@@ -156,15 +201,16 @@ body {
 /* Export button styles */
 .control-group button {
   width: 100%;
-  background: #2a2032;
+  background: #3a3042;
   color: #d2bf55;
   border: 1px solid #d2bf55;
-  padding: 8px 12px;
+  padding: 10px 12px;
   font-family: "Public Sans", sans-serif;
   font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-top: 10px;
 }
 
 .control-group button:hover:not(:disabled) {
@@ -200,12 +246,16 @@ body {
 
 .hidden-overflow {
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Using the exact original animation from slide.txt */
 .slide {
-  font-size: 128px;
+  font-size: min(20vw, 128px);
   margin: 0px;
+  text-align: center;
 }
 
 @keyframes slide {

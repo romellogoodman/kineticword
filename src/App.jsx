@@ -210,17 +210,20 @@ function App() {
       const frameCount = Math.min(totalFrames, 60); // Limit to 60 frames for performance
       const frameSkip = Math.ceil(totalFrames / frameCount);
       
-      // Get dimensions
+      // Get dimensions from animation-container
       const rect = containerRef.current.getBoundingClientRect();
       const width = Math.round(rect.width);
       const height = Math.round(rect.height);
       
-      // Create GIF encoder
+      // Ensure square aspect ratio for the GIF
+      const size = Math.min(width, height);
+      
+      // Create GIF encoder with square dimensions
       const gif = new GIF({
         workers: 2,
         quality: 10,
-        width,
-        height,
+        width: size,
+        height: size,
         workerScript: '/gif.worker.js'
       });
       
@@ -242,7 +245,7 @@ function App() {
           yPosition = ((progress - 0.5) * 2) * 200;
         }
         
-        // Create JSX for Satori
+        // Create JSX for Satori with square dimensions
         const element = (
           <div
             style={{
@@ -250,18 +253,19 @@ function App() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width,
-              height,
+              width: size,
+              height: size,
               backgroundColor: '#3a3042',
             }}
           >
             <div
               style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '128px',
+                fontFamily: 'Public Sans, Inter, sans-serif',
+                fontSize: Math.floor(size / 5) + 'px', // Dynamic font size based on container
                 fontWeight: 500,
                 color: '#d2bf55',
-                transform: `translateY(${yPosition}px)`,
+                transform: `translateY(${yPosition * size / 500}px)`, // Scale yPosition to container size
+                textAlign: 'center',
               }}
             >
               {text}
@@ -269,10 +273,10 @@ function App() {
           </div>
         );
         
-        // Generate SVG with Satori
+        // Generate SVG with Satori using square dimensions
         const svg = await satori(element, {
-          width,
-          height,
+          width: size,
+          height: size,
           fonts: [font],
           debug: false
         });
@@ -287,16 +291,16 @@ function App() {
           img.onload = () => {
             // Create a canvas to convert SVG to bitmap (needed for GIF.js in some browsers)
             const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = size;
+            canvas.height = size;
             const ctx = canvas.getContext('2d');
             
             // Fill background
             ctx.fillStyle = '#3a3042';
-            ctx.fillRect(0, 0, width, height);
+            ctx.fillRect(0, 0, size, size);
             
             // Draw the SVG image
-            ctx.drawImage(img, 0, 0, width, height);
+            ctx.drawImage(img, 0, 0, size, size);
             
             // Add canvas to GIF
             gif.addFrame(canvas, { 
@@ -403,31 +407,36 @@ function App() {
   }, [isPlaying, duration, totalFrames]);
 
   return (
-    <>
-      <Controls 
-        text={text} 
-        setText={handleSetText}
-        currentFrame={currentFrame}
-        setCurrentFrame={setCurrentFrame}
-        totalFrames={totalFrames}
-        isPlaying={isPlaying}
-        setIsPlaying={setIsPlaying}
-        duration={duration}
-        setDuration={setDuration}
-        isExporting={isExporting}
-        onExport={captureFrames}
-      />
-      <div className="center">
-        <div className="hidden-overflow" ref={containerRef}>
-          <p 
-            ref={slideRef}
-            className="truculenta slide"
-          >
-            {text}
-          </p>
+    <div className="app-container">
+      <div className="sidebar">
+        <h1 className="app-title">Kinetic Word</h1>
+        <Controls 
+          text={text} 
+          setText={handleSetText}
+          currentFrame={currentFrame}
+          setCurrentFrame={setCurrentFrame}
+          totalFrames={totalFrames}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          duration={duration}
+          setDuration={setDuration}
+          isExporting={isExporting}
+          onExport={captureFrames}
+        />
+      </div>
+      <div className="main-content">
+        <div className="animation-container" ref={containerRef}>
+          <div className="hidden-overflow">
+            <p 
+              ref={slideRef}
+              className="truculenta slide"
+            >
+              {text}
+            </p>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
