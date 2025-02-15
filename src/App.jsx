@@ -1,5 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
+import GIF from 'gif.js';
+import satori from 'satori';
 import './App.css';
+
+function ExportButton({ duration, isExporting, onExport }) {  
+  return (
+    <button 
+      onClick={onExport}
+      disabled={isExporting}
+      className={isExporting ? 'exporting' : ''}
+    >
+      {isExporting ? 'Exporting...' : 'Export as GIF'}
+    </button>
+  );
+}
 
 function Controls({ 
   text, 
@@ -10,7 +24,9 @@ function Controls({
   isPlaying, 
   setIsPlaying,
   duration,
-  setDuration
+  setDuration,
+  isExporting,
+  onExport
 }) {
   const handleTextChange = (e) => {
     // Remove all spaces from the input
@@ -70,17 +86,25 @@ function Controls({
         <button 
           onClick={() => setIsPlaying(true)} 
           className={isPlaying ? 'active' : ''}
-          disabled={isPlaying}
+          disabled={isPlaying || isExporting}
         >
           Play
         </button>
         <button 
           onClick={() => setIsPlaying(false)} 
           className={!isPlaying ? 'active' : ''}
-          disabled={!isPlaying}
+          disabled={!isPlaying || isExporting}
         >
           Pause
         </button>
+      </div>
+      
+      <div className="control-group">
+        <ExportButton 
+          duration={duration}
+          isExporting={isExporting}
+          onExport={onExport}
+        />
       </div>
     </div>
   );
@@ -93,13 +117,229 @@ function App() {
   const totalFrames = duration * 60;
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const slideRef = useRef(null);
+  const containerRef = useRef(null);
   
   // Reset progress when text changes
   const handleSetText = (newText) => {
     setText(newText);
     setCurrentFrame(0);
     setIsPlaying(false);
+  };
+  
+  // Load Public Sans Medium from the public directory
+  const loadFont = async () => {
+    try {
+      // Try to load the WOFF version of PublicSans-Medium
+      const fontUrl = '/public-sans/PublicSans-Medium.woff';
+      const fontResponse = await fetch(fontUrl);
+      
+      if (!fontResponse.ok) {
+        throw new Error(`Failed to load font: ${fontResponse.status} ${fontResponse.statusText}`);
+      }
+      
+      const fontData = await fontResponse.arrayBuffer();
+      
+      return {
+        name: 'Public Sans',
+        data: fontData,
+        weight: 500,
+        style: 'normal'
+      };
+    } catch (error) {
+      console.error('Error loading Public Sans Medium:', error);
+      
+      // If that fails, try to load the Regular weight
+      try {
+        const fallbackUrl = '/public-sans/PublicSans-Regular.woff';
+        const fallbackResponse = await fetch(fallbackUrl);
+        
+        if (!fallbackResponse.ok) {
+          throw new Error(`Failed to load fallback font: ${fallbackResponse.status} ${fallbackResponse.statusText}`);
+        }
+        
+        const fallbackData = await fallbackResponse.arrayBuffer();
+        
+        return {
+          name: 'Public Sans',
+          data: fallbackData,
+          weight: 400,
+          style: 'normal'
+        };
+      } catch (fallbackError) {
+        console.error('Error loading fallback font:', fallbackError);
+        
+        // As a last resort, use embedded Inter font that's known to work with Satori
+        try {
+          const base64Font = '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';
+          
+          const binaryString = atob(base64Font);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          
+          return {
+            name: 'Inter',
+            data: bytes.buffer,
+            weight: 400,
+            style: 'normal'
+          };
+        } catch (embeddedError) {
+          console.error('Error with embedded font:', embeddedError);
+          throw error; // Throw the original error
+        }
+      }
+    }
+  };
+
+  // Function to capture frames and create GIF
+  const captureFrames = async () => {
+    setIsExporting(true);
+    setIsPlaying(false);
+    
+    // Temporarily store current frame to restore later
+    const savedFrame = currentFrame;
+    
+    try {
+      // Get font configuration (system fonts only)
+      const font = await loadFont();
+      
+      // Calculate frame parameters
+      const frameCount = Math.min(totalFrames, 60); // Limit to 60 frames for performance
+      const frameSkip = Math.ceil(totalFrames / frameCount);
+      
+      // Get dimensions
+      const rect = containerRef.current.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      
+      // Create GIF encoder
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width,
+        height,
+        workerScript: '/gif.worker.js'
+      });
+      
+      // Generate frames
+      for (let i = 0; i < totalFrames; i += frameSkip) {
+        // Calculate current position in animation
+        const progress = i / totalFrames;
+        
+        // Calculate Y position based on animation keyframes
+        let yPosition;
+        if (progress < 0.25) {
+          // 0% to 25%: 200px to 0px
+          yPosition = 200 - (progress * 4 * 200);
+        } else if (progress < 0.5) {
+          // 25% to 50%: stay at 0px
+          yPosition = 0;
+        } else {
+          // 50% to 100%: 0px to 200px
+          yPosition = ((progress - 0.5) * 2) * 200;
+        }
+        
+        // Create JSX for Satori
+        const element = (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width,
+              height,
+              backgroundColor: '#3a3042',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '128px',
+                fontWeight: 500,
+                color: '#d2bf55',
+                transform: `translateY(${yPosition}px)`,
+              }}
+            >
+              {text}
+            </div>
+          </div>
+        );
+        
+        // Generate SVG with Satori
+        const svg = await satori(element, {
+          width,
+          height,
+          fonts: [font],
+          debug: false
+        });
+        
+        // Create SVG Blob and Image
+        const img = new Image();
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        // Wait for image to load
+        await new Promise((resolve) => {
+          img.onload = () => {
+            // Create a canvas to convert SVG to bitmap (needed for GIF.js in some browsers)
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            // Fill background
+            ctx.fillStyle = '#3a3042';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw the SVG image
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Add canvas to GIF
+            gif.addFrame(canvas, { 
+              delay: (duration * 1000) / frameCount, 
+              copy: true,
+              dispose: 2 // Dispose previous frame
+            });
+            
+            resolve();
+          };
+          img.src = url;
+        });
+        
+        // Clean up URL
+        URL.revokeObjectURL(url);
+        
+        // Update progress in UI (but don't actually change animation)
+        setCurrentFrame(i);
+      }
+      
+      // Generate the GIF
+      gif.on('finished', function(blob) {
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${text.toLowerCase()}-animation.gif`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Restore state
+        setCurrentFrame(savedFrame);
+        setIsExporting(false);
+      });
+      
+      gif.render();
+      
+    } catch (error) {
+      console.error('Error exporting GIF:', error);
+      setCurrentFrame(savedFrame);
+      setIsExporting(false);
+    }
   };
   
   // Update the animation when frame or duration changes
@@ -174,9 +414,11 @@ function App() {
         setIsPlaying={setIsPlaying}
         duration={duration}
         setDuration={setDuration}
+        isExporting={isExporting}
+        onExport={captureFrames}
       />
       <div className="center">
-        <div className="hidden-overflow">
+        <div className="hidden-overflow" ref={containerRef}>
           <p 
             ref={slideRef}
             className="truculenta slide"

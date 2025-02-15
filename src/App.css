@@ -1,4 +1,27 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Truculenta:opsz,wdth,wght@12..72,75..125,100..900&display=swap");
+/* Load Public Sans from local files */
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/public-sans/PublicSans-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/public-sans/PublicSans-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/public-sans/PublicSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Keep Roboto Mono for monospace elements */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap");
 
 :root {
   --total-frames: 240;
@@ -7,16 +30,14 @@
 
 .roboto {
   font-family: "Roboto Mono", monospace;
-  font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: "wght" 400;
+  font-weight: 400;
 }
 
 .truculenta {
-  font-family: "Truculenta", sans-serif;
-  font-optical-sizing: auto;
+  font-family: "Public Sans", sans-serif;
   font-style: normal;
-  font-variation-settings: "wght" 500, "wdth" 125;
+  font-weight: 500;
 }
 
 #root {
@@ -53,8 +74,9 @@ body {
 .control-group label {
   display: block;
   margin-bottom: 6px;
-  font-family: "Roboto Mono", monospace;
+  font-family: "Public Sans", sans-serif;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .controls input[type="text"] {
@@ -62,7 +84,8 @@ body {
   color: #d2bf55;
   border: 1px solid #d2bf55;
   padding: 8px 12px;
-  font-family: "Roboto Mono", monospace;
+  font-family: "Public Sans", sans-serif;
+  font-weight: 400;
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box;
@@ -112,7 +135,8 @@ body {
   color: #d2bf55;
   border: 1px solid #d2bf55;
   padding: 8px 12px;
-  font-family: "Roboto Mono", monospace;
+  font-family: "Public Sans", sans-serif;
+  font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -127,6 +151,42 @@ body {
 .buttons button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Export button styles */
+.control-group button {
+  width: 100%;
+  background: #2a2032;
+  color: #d2bf55;
+  border: 1px solid #d2bf55;
+  padding: 8px 12px;
+  font-family: "Public Sans", sans-serif;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-group button:hover:not(:disabled) {
+  background: #d2bf55;
+  color: #2a2032;
+}
+
+.control-group button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-group button.exporting {
+  background: #d2bf55;
+  color: #2a2032;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0.8; }
 }
 
 .center {
