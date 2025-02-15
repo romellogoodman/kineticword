@@ -1,42 +1,168 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Truculenta:opsz,wdth,wght@12..72,75..125,100..900&display=swap");
+
+:root {
+  --total-frames: 240;
+  --animation-duration: 4s;
+}
+
+.roboto {
+  font-family: "Roboto Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wght" 400;
+}
+
+.truculenta {
+  font-family: "Truculenta", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wght" 500, "wdth" 125;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background: #3a3042;
+  color: #d2bf55;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  background: rgba(42, 32, 50, 0.8);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #d2bf55;
+  width: 200px;
+}
+
+.control-group {
+  margin-bottom: 12px;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 14px;
+}
+
+.controls input[type="text"] {
+  background: #2a2032;
+  color: #d2bf55;
+  border: 1px solid #d2bf55;
+  padding: 8px 12px;
+  font-family: "Roboto Mono", monospace;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.controls input::placeholder {
+  color: #d2bf55;
+  opacity: 0.6;
+}
+
+.slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #2a2032;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d2bf55;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d2bf55;
+  cursor: pointer;
+  border: none;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.buttons button {
+  flex: 1;
+  background: #2a2032;
+  color: #d2bf55;
+  border: 1px solid #d2bf55;
+  padding: 8px 12px;
+  font-family: "Roboto Mono", monospace;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttons button.active,
+.buttons button:hover:not(:disabled) {
+  background: #d2bf55;
+  color: #2a2032;
+}
+
+.buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.center {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hidden-overflow {
+  overflow: hidden;
+}
+
+/* Using the exact original animation from slide.txt */
+.slide {
+  font-size: 128px;
+  margin: 0px;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateY(200px);
   }
-  to {
-    transform: rotate(360deg);
+
+  25% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(0px);
+  }
+
+  100% {
+    transform: translateY(200px);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
