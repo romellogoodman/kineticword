@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Text Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Truculenta:opsz,wdth,wght@12..72,75..125,100..900&display=swap" rel="stylesheet">
+    <style>
+        .roboto {
+            font-family: "Roboto Mono", monospace;
+            font-optical-sizing: auto;
+            font-style: normal;
+            font-variation-settings: "wght" 400;
+        }
+
+        .truculenta {
+            font-family: "Truculenta", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+            font-variation-settings: "wght" 500, "wdth" 125;
+        }
+
+        body {
+            background: #3a3042;
+            color: #d2bf55;
+            margin: 0;
+            padding: 0;
+        }
+
+        .center {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hidden-overflow {
+            overflow: hidden;
+        }
+
+        .slide {
+            font-size: 128px;
+            margin: 0px;
+            transform: translateY(100%);
+            animation-name: slide;
+            animation-duration: 4s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateY(200px);
+            }
+
+            25% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(200px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <div class="hidden-overflow">
+            <p class="truculenta slide">SLIDE</p>
+        </div>
+    </div>
+</body>
+</html>
